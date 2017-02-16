@@ -3,13 +3,4 @@
 
 http://email.91dizhi.at.gmail.com.7h1.space/index.php
 
- m_new(NGLLX*NGLLY*NGLLZ*NSPEC*1/2)=   4238.495    
- m_new_vp(NGLLX*NGLLY*NGLLZ*NSPEC*1/2)=   7629.291    
- g_new(NGLLX*NGLLY*NGLLZ*NSPEC*1/2=  -3587.557    
- g_empire(NGLLX*NGLLY*NGLLZ*NSPEC*1/2=  -3984.709    
- g_empire(NGLLX*NGLLY*NGLLZ*NSPEC*3/2=   19.81024    
- g_empire(NGLLX*NGLLY*NGLLZ*NSPEC*5/2=   1079.360    
- R1(z)=   1.953535    
- R2(z)=  0.3320971    
- R1(z)*alpha=   38.70001    
- R2(z)*rho=   358.4522 
+mpirun -np 4 ./bin/misfit_adjoint.exe true z CC AD /oldscratch/l/liuqy/zhang18/seisDD/GJI2016/FwiSYN/submit_job/FwiSYN//000000/
