@@ -1,0 +1,22 @@
+IS_BANDPASS=true
+Fmin1=0.025
+Fmax1=0.029
+Fmin2=0.029
+Fmax2=0.036
+Fmin3=0.036
+Fmax3=0.05
+Fmin4=0.05
+Fmax4=0.067
+Fmin5=0.067
+Fmax5=0.1
+Fmin6=0.1
+Fmax6=0.2
+
+
+### postprocessing
+# smooth
+smooth=true
+sigma_x=10000
+sigma_z=5000
+sigma_x_rate=0.0
+sigma_z_rate=0.0
