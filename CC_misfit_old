@@ -1,0 +1,86 @@
+subroutine CC_misfit(d,s,npts,deltat,f0,i_tstart, i_tend,window_type,compute_adjoint,&
+        misfit_output, adj)
+    !! CC traveltime shift between d and s
+    !! misfit_output = T(s)- T(d) 
+    !! adj = misfit_output * vel(s) / Mtr 
+
+    use constants
+    implicit none
+
+    ! inputs & outputs 
+    real(kind=CUSTOM_REAL), dimension(*), intent(in) :: d,s
+    real(kind=CUSTOM_REAL), intent(in) :: deltat,f0
+    integer, intent(in) :: i_tstart, i_tend
+    integer, intent(in) :: npts,window_type
+    logical, intent(in) :: compute_adjoint
+    real(kind=CUSTOM_REAL), intent(out) :: misfit_output
+    real(kind=CUSTOM_REAL), dimension(*),intent(out),optional :: adj
+
+    ! index
+    integer :: i
+
+    ! window
+    integer :: nlen
+    real(kind=CUSTOM_REAL), dimension(npts) :: d_tw,s_tw
+    ! cc 
+    integer :: ishift
+    real(kind=CUSTOM_REAL) :: tshift, dlnA, cc_max
+    ! adjoint
+    real(kind=CUSTOM_REAL) :: Mtr
+    real(kind=CUSTOM_REAL), dimension(npts) :: s_tw_vel, adj_tw
+
+    !! window
+    call cc_window(s,npts,window_type,i_tstart,i_tend,0,0.d0,nlen,s_tw)
+    call cc_window(d,npts,window_type,i_tstart,i_tend,0,0.d0,nlen,d_tw)
+    if(nlen<1 .or. nlen>npts) print*,'check i_start,i_tend, nlen ',i_tstart,i_tend,nlen
+
+    !! cc misfit
+    call xcorr_calc(s_tw,d_tw,npts,1,nlen,ishift,dlnA,cc_max) ! T(s-d)
+       tshift = ishift*deltat
+
+    misfit_output = tshift
+
+    if( DISPLAY_DETAILS) then
+        print*
+        print*, 'time-domain winodw'
+        print*, 'time window boundaries : ',i_tstart,i_tend
+        print*, 'time window length (sample /  second) : ', nlen, nlen*deltat
+        print*, 'cc ishift/tshift/dlnA of s-d : ', ishift,tshift,dlnA
+        open(1,file=trim(output_dir)//'/dat_syn_win',status='unknown')
+        do  i = 1,nlen
+        write(1,'(I5,2e15.5)') i, d_tw(i),s_tw(i)
+        enddo
+        close(1)
+    endif
+
+    !! cc adjoint
+    if(COMPUTE_ADJOINT) then
+        ! computer velocity 
+        call compute_vel(s_tw,npts,deltat,nlen,s_tw_vel)
+
+        ! constant on the bottom 
+        Mtr=-sum(s_tw_vel(1:nlen)*s_tw_vel(1:nlen))*deltat
+
+
+        ! adjoint source
+        adj_tw(1:nlen)=  tshift*s_tw_vel(1:nlen)/Mtr
+
+
+        ! reverse window and taper again 
+        call cc_window_inverse(adj_tw,npts,window_type,i_tstart,i_tend,0,0.d0,adj)
+
+
+        if( DISPLAY_DETAILS) then
+            open(1,file=trim(output_dir)//'/adj_CC',status='unknown')
+            do  i =  i_tstart,i_tend
+            write(1,'(I5,e15.5)') i,adj(i)
+            enddo
+            close(1)
+        endif
+
+    endif
+
+end subroutine CC_misfit
+
+
+                                                                                                                                          215,1         17%
