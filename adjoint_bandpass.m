@@ -272,6 +272,52 @@ mv dat.txt syn4.txt
 
 #python plot2d.py  DATA_syn/z_processed5.bin
 #mv dat.txt syn5.txt
+
+
+
+
+
+#!/usr/bin/env python
+
+import sys
+from os.path import exists
+
+import numpy as np
+import pylab as plt
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+
+def read_fortran(filename):
+    """ Reads Fortran style binary data and returns a numpy array.
+    """
+    with open(filename, 'rb') as file:
+        # read size of record
+        file.seek(0)
+        n = np.fromfile(file, dtype='int32', count=1)[0]
+
+        # read contents of record
+        file.seek(4)
+        v = np.fromfile(file, dtype='float32')
+
+    return v[:-1]
+
+
+
+
+if __name__ == '__main__':
+    """ Plots data on 2-D unstructured mesh
+
+      Can be used to plot models or kernels created by SPECFEM2D
+
+      SYNTAX
+          plot2d  x_coords_file  z_coords_file  database_file
+    """
+
+    # parse command line arguments
+    database_file = sys.argv[1]
+    v = read_fortran(database_file)
+
+    np.savetxt('dat.txt',v)
+
 #
 #python plot2d.py  DATA_syn/z_processed6.bin
 #mv dat.txt syn6.txt
