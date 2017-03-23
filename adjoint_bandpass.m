@@ -188,3 +188,105 @@ xlabel('time/s','Position',[220,-3])
 saveas(fig,[isource,'-',nametitle],'pdf')
 
 %%
+
+
+
+
+
+#!/bin/bash
+#scp -r  zhang18@login.scinet.utoronto.ca:/scratch/l/liuqy/zhang18/seisDD/GJI2016/FwiSYN/submit_job/FwiSYN/000000/DATA_* ./000000
+
+for isource in `cat list`;
+
+do
+
+#mkdir -p ./$isource/DATA_out
+
+#scp -r  zhang18@login.scinet.utoronto.ca:/scratch/l/liuqy/zhang18/seisDD/GJI2016/FwiEGF_fang_smooth/submit_job/FwiEGF_fang_smooth/$isource/DATA_out/win* ./$isource/DATA_out 
+
+
+echo $isource
+
+cp plot2d.py $isource
+cd $isource
+#
+python plot2d.py  DATA_obs/z_processed1.bin
+mv dat.txt obs1.txt
+
+python plot2d.py  DATA_obs/z_processed2.bin
+mv dat.txt obs2.txt
+
+python plot2d.py  DATA_obs/z_processed3.bin
+mv dat.txt obs3.txt
+
+python plot2d.py  DATA_obs/z_processed4.bin
+mv dat.txt obs4.txt
+
+#python plot2d.py  DATA_obs/z_processed5.bin
+#mv dat.txt obs5.txt
+#
+#python plot2d.py  DATA_obs/z_processed6.bin
+#mv dat.txt obs6.txt
+#
+#python plot2d.py  DATA_obs/z_processed7.bin
+#mv dat.txt obs7.txt
+
+
+python plot2d.py  DATA_syn/z_adj1.bin
+mv dat.txt adj1.txt
+
+python plot2d.py  DATA_syn/z_adj2.bin
+mv dat.txt adj2.txt
+
+python plot2d.py  DATA_syn/z_adj3.bin
+mv dat.txt adj3.txt
+
+python plot2d.py  DATA_syn/z_adj4.bin
+mv dat.txt adj4.txt
+
+python plot2d.py  DATA_syn/z_adj1_before.bin
+mv dat.txt adj1_before.txt
+
+python plot2d.py  DATA_syn/z_adj2_before.bin
+mv dat.txt adj2_before.txt
+
+python plot2d.py  DATA_syn/z_adj3_before.bin
+mv dat.txt adj3_before.txt
+
+python plot2d.py  DATA_syn/z_adj4_before.bin
+mv dat.txt adj4_before.txt
+
+
+
+python plot2d.py  DATA_syn/z_processed1.bin
+mv dat.txt syn1.txt
+
+python plot2d.py  DATA_syn/z_processed2.bin
+mv dat.txt syn2.txt
+
+python plot2d.py  DATA_syn/z_processed3.bin
+mv dat.txt syn3.txt
+
+python plot2d.py  DATA_syn/z_processed4.bin
+mv dat.txt syn4.txt
+
+#python plot2d.py  DATA_syn/z_processed5.bin
+#mv dat.txt syn5.txt
+#
+#python plot2d.py  DATA_syn/z_processed6.bin
+#mv dat.txt syn6.txt
+#
+#python plot2d.py  DATA_syn/z_processed7.bin
+#mv dat.txt syn7.txt
+
+mv syn*.txt ./DATA_syn
+mv adj*.txt ./DATA_syn
+mv obs*.txt ./DATA_obs
+
+rm  ./DATA_obs/*bin
+rm  ./DATA_syn/*bin
+cd ../
+
+
+done
+
